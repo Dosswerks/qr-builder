@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Builder — Generate &amp; Customize QR Codes</title>
+  <meta name="description" content="Generate, customize, and export QR codes for URLs, contacts, Wi-Fi, and more. Runs entirely in your browser.">
+  <link rel="stylesheet" href="style.css">
+
+  <!-- QR encoding library -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+
+  <!-- XSS sanitization -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="app-header">
+    <div class="header-content">
+      <div class="app-brand">
+        <a href="index.html" class="brand-link" aria-label="QR Builder home">
+          <img src="assets/logo.png" alt="QR Builder" class="brand-logo" width="200" height="48">
+        </a>
+        <p class="brand-copyright">&copy; 2026 Andrew Doss. All rights reserved.</p>
+      </div>
+      <nav class="header-actions" aria-label="Header actions">
+        <button type="button" id="shortcuts-btn" class="btn btn-icon" aria-label="Keyboard shortcuts" title="Keyboard shortcuts (?)">
+          <span aria-hidden="true">⌨</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="app-main">
+    <div class="app-layout">
+
+      <!-- ===== LEFT PANEL: Controls ===== -->
+      <div class="controls-panel">
+        <form id="qr-form" aria-label="QR code configuration" onsubmit="return false;">
+
+        <!-- Data Type Selector -->
+        <section class="section-data-type" aria-label="Data type selection">
+          <fieldset>
+            <legend class="section-heading">Data Type</legend>
+            <div id="data-type-selector" role="radiogroup" aria-label="Select QR code data type">
+              <label class="radio-card">
+                <input type="radio" name="dataType" value="url" checked>
+                <span class="radio-label">URL</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="dataType" value="text">
+                <span class="radio-label">Plain Text</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="dataType" value="phone">
+                <span class="radio-label">Phone</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="dataType" value="email">
+                <span class="radio-label">Email</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="dataType" value="sms">
+                <span class="radio-label">SMS</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="dataType" value="wifi">
+                <span class="radio-label">Wi-Fi</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="dataType" value="vcard">
+                <span class="radio-label">vCard</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="dataType" value="geo">
+                <span class="radio-label">Geo</span>
+              </label>
+            </div>
+          </fieldset>
+        </section>
+
+        <!-- Input Area -->
+        <section class="section-input" aria-label="QR code content input">
+          <h2 class="section-heading">Content</h2>
+
+          <!-- URL Input -->
+          <div id="input-url" class="input-group" data-type="url">
+            <label for="input-url-field">URL</label>
+            <input type="url" id="input-url-field" placeholder="https://example.com" autocomplete="off">
+            <p class="field-error" id="error-url" role="alert" aria-live="assertive"></p>
+          </div>
+
+          <!-- Plain Text Input -->
+          <div id="input-text" class="input-group" data-type="text" hidden>
+            <label for="input-text-field">Text</label>
+            <textarea id="input-text-field" rows="4" placeholder="Enter any text content" autocomplete="off"></textarea>
+            <p class="field-error" id="error-text" role="alert" aria-live="assertive"></p>
+          </div>
+
+          <!-- Phone Input -->
+          <div id="input-phone" class="input-group" data-type="phone" hidden>
+            <label for="input-phone-field">Phone Number</label>
+            <input type="tel" id="input-phone-field" placeholder="+1-555-0123" autocomplete="off">
+            <p class="field-error" id="error-phone" role="alert" aria-live="assertive"></p>
+          </div>
+
+          <!-- Email Input -->
+          <div id="input-email" class="input-group" data-type="email" hidden>
+            <label for="input-email-field">Email Address</label>
+            <input type="email" id="input-email-field" placeholder="name@example.com" autocomplete="off">
+            <p class="field-error" id="error-email" role="alert" aria-live="assertive"></p>
+          </div>
+
+          <!-- SMS Input -->
+          <div id="input-sms" class="input-group" data-type="sms" hidden>
+            <label for="input-sms-phone">Phone Number</label>
+            <input type="tel" id="input-sms-phone" placeholder="+1-555-0123" autocomplete="off" aria-describedby="tooltip-sms">
+            <span id="tooltip-sms" role="tooltip" class="tooltip">Enter the recipient's phone number and an optional message body for the SMS QR code.</span>
+
+            <label for="input-sms-body">Message Body</label>
+            <textarea id="input-sms-body" rows="3" placeholder="Hello!" autocomplete="off"></textarea>
+            <p class="field-error" id="error-sms" role="alert" aria-live="assertive"></p>
+          </div>
+
+          <!-- Wi-Fi Input -->
+          <div id="input-wifi" class="input-group" data-type="wifi" hidden>
+            <label for="input-wifi-ssid">Network Name (SSID)</label>
+            <input type="text" id="input-wifi-ssid" placeholder="MyNetwork" autocomplete="off" aria-describedby="tooltip-wifi">
+            <span id="tooltip-wifi" role="tooltip" class="tooltip">Enter your Wi-Fi network name, password, and encryption type. Scanning the QR code will auto-connect devices.</span>
+
+            <label for="input-wifi-password">Password</label>
+            <input type="text" id="input-wifi-password" placeholder="password123" autocomplete="off">
+
+            <label for="input-wifi-encryption">Encryption Type</label>
+            <select id="input-wifi-encryption">
+              <option value="WPA" selected>WPA/WPA2</option>
+              <option value="WEP">WEP</option>
+              <option value="nopass">None</option>
+            </select>
+            <p class="field-error" id="error-wifi" role="alert" aria-live="assertive"></p>
+          </div>
+
+          <!-- vCard Input -->
+          <div id="input-vcard" class="input-group" data-type="vcard" hidden>
+            <p class="input-group-description" id="tooltip-vcard" role="tooltip">Enter contact details to generate a vCard QR code. At minimum, provide a first or last name.</p>
+
+            <label for="input-vcard-firstname">First Name</label>
+            <input type="text" id="input-vcard-firstname" placeholder="Jane" autocomplete="off" aria-describedby="tooltip-vcard">
+
+            <label for="input-vcard-lastname">Last Name</label>
+            <input type="text" id="input-vcard-lastname" placeholder="Doe" autocomplete="off">
+
+            <label for="input-vcard-phone">Phone</label>
+            <input type="tel" id="input-vcard-phone" placeholder="+1-555-0123" autocomplete="off">
+
+            <label for="input-vcard-email">Email</label>
+            <input type="email" id="input-vcard-email" placeholder="jane@example.com" autocomplete="off">
+
+            <label for="input-vcard-org">Organization</label>
+            <input type="text" id="input-vcard-org" placeholder="Acme Inc" autocomplete="off">
+
+            <label for="input-vcard-address">Address</label>
+            <input type="text" id="input-vcard-address" placeholder="123 Main St" autocomplete="off">
+            <p class="field-error" id="error-vcard" role="alert" aria-live="assertive"></p>
+          </div>
+
+          <!-- Geographic Coordinates Input -->
+          <div id="input-geo" class="input-group" data-type="geo" hidden>
+            <label for="input-geo-lat">Latitude</label>
+            <input type="number" id="input-geo-lat" placeholder="40.7128" min="-90" max="90" step="any" autocomplete="off" aria-describedby="tooltip-geo">
+            <span id="tooltip-geo" role="tooltip" class="tooltip">Enter latitude (-90 to 90) and longitude (-180 to 180). Scanning the QR code will open a map at these coordinates.</span>
+
+            <label for="input-geo-lng">Longitude</label>
+            <input type="number" id="input-geo-lng" placeholder="-74.0060" min="-180" max="180" step="any" autocomplete="off">
+            <p class="field-error" id="error-geo" role="alert" aria-live="assertive"></p>
+          </div>
+        </section>
+
+        <!-- Customization Panel -->
+        <section class="section-customization" aria-label="QR code customization">
+          <h2 class="section-heading">Customize</h2>
+
+          <!-- Colors -->
+          <fieldset class="customization-group">
+            <legend>Colors</legend>
+
+            <div class="color-row">
+              <label for="color-foreground">Foreground</label>
+              <input type="color" id="color-foreground" value="#000000">
+            </div>
+
+            <div class="color-row">
+              <label for="color-background">Background</label>
+              <input type="color" id="color-background" value="#FFFFFF">
+            </div>
+
+            <div class="checkbox-row">
+              <input type="checkbox" id="transparent-bg">
+              <label for="transparent-bg">Transparent background</label>
+            </div>
+          </fieldset>
+
+          <!-- Module Style -->
+          <fieldset class="customization-group">
+            <legend>Module Style</legend>
+            <div class="radio-row">
+              <label class="radio-inline">
+                <input type="radio" name="moduleStyle" value="square" checked>
+                <span>Square</span>
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="moduleStyle" value="rounded">
+                <span>Rounded</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <!-- Corner Eye Style -->
+          <fieldset class="customization-group">
+            <legend>Corner Eye Style</legend>
+            <div class="radio-row">
+              <label class="radio-inline">
+                <input type="radio" name="cornerEyeStyle" value="square" checked>
+                <span>Square</span>
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="cornerEyeStyle" value="rounded">
+                <span>Rounded</span>
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="cornerEyeStyle" value="dot">
+                <span>Dot</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <!-- Logo Upload -->
+          <fieldset class="customization-group">
+            <legend>Logo</legend>
+            <div id="logo-drop-zone" class="drop-zone" role="region" aria-label="Logo upload area">
+              <p class="drop-zone-text">Drag &amp; drop a logo here, or</p>
+              <label for="logo-file-input" class="btn btn-secondary btn-sm">Choose File</label>
+              <input type="file" id="logo-file-input" accept="image/png,image/jpeg,image/svg+xml" class="visually-hidden">
+              <p class="drop-zone-hint">PNG, JPEG, or SVG — max 2 MB</p>
+            </div>
+            <div id="logo-preview" class="logo-preview" hidden>
+              <img id="logo-preview-img" src="" alt="Uploaded logo preview" style="display:none;">
+              <button type="button" id="logo-remove-btn" class="btn btn-danger btn-sm" aria-label="Remove logo">Remove</button>
+            </div>
+            <p class="field-error" id="error-logo" role="alert" aria-live="assertive"></p>
+          </fieldset>
+
+          <!-- Error Correction Level -->
+          <fieldset class="customization-group">
+            <legend>Error Correction</legend>
+            <div id="ec-level-selector" role="radiogroup" aria-label="Error correction level">
+              <label class="radio-option">
+                <input type="radio" name="ecLevel" value="L">
+                <span class="radio-option-label">L</span>
+                <span class="radio-option-desc">7% recovery</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="ecLevel" value="M" checked>
+                <span class="radio-option-label">M</span>
+                <span class="radio-option-desc">15% recovery</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="ecLevel" value="Q">
+                <span class="radio-option-label">Q</span>
+                <span class="radio-option-desc">25% recovery</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="ecLevel" value="H">
+                <span class="radio-option-label">H</span>
+                <span class="radio-option-desc">30% recovery</span>
+              </label>
+            </div>
+            <p id="ec-recommendation" class="recommendation" hidden></p>
+          </fieldset>
+
+          <!-- Output Size -->
+          <fieldset class="customization-group">
+            <legend>Output Size</legend>
+            <label for="size-selector">Size (pixels)</label>
+            <select id="size-selector">
+              <option value="256">256 × 256</option>
+              <option value="512" selected>512 × 512</option>
+              <option value="1024">1024 × 1024</option>
+              <option value="2048">2048 × 2048</option>
+            </select>
+          </fieldset>
+
+          <!-- Quiet Zone -->
+          <fieldset class="customization-group">
+            <legend>Quiet Zone</legend>
+            <div class="quiet-zone-control">
+              <label for="quiet-zone-range">Margin (modules)</label>
+              <div class="range-with-value">
+                <input type="range" id="quiet-zone-range" min="0" max="8" value="4" step="1">
+                <output for="quiet-zone-range" id="quiet-zone-value">4</output>
+              </div>
+            </div>
+          </fieldset>
+        </section>
+
+        </form>
+      </div><!-- /.controls-panel -->
+
+      <!-- ===== RIGHT PANEL: Preview & Export ===== -->
+      <div class="preview-panel">
+
+        <!-- Preview Area -->
+        <section class="section-preview" aria-label="QR code preview" aria-live="polite">
+          <h2 class="section-heading">Preview</h2>
+
+          <div class="preview-canvas-wrapper">
+            <canvas id="qr-canvas" role="img" aria-label="QR code preview — enter content to generate" width="512" height="512"></canvas>
+            <p id="preview-placeholder" class="preview-placeholder">Enter content to generate a QR code</p>
+          </div>
+
+          <!-- Scan Validation Indicator -->
+          <div id="scan-indicator" class="scan-indicator" role="status" aria-live="polite">
+            <span id="scan-status-icon" class="scan-status-icon" aria-hidden="true"></span>
+            <span id="scan-status-text" class="scan-status-text">Ready</span>
+          </div>
+          <ul id="scan-warnings" class="scan-warnings" aria-label="Scan validation warnings"></ul>
+        </section>
+
+        <!-- Export Bar -->
+        <section class="section-export" aria-label="Export actions">
+          <div class="export-bar">
+            <div class="export-primary">
+              <div class="download-group">
+                <button type="button" id="btn-download" class="btn btn-primary" disabled>
+                  Download
+                </button>
+                <select id="export-format" aria-label="Export format">
+                  <option value="png" selected>PNG</option>
+                  <option value="svg">SVG</option>
+                </select>
+              </div>
+
+              <button type="button" id="btn-copy" class="btn btn-secondary" disabled>
+                Copy to Clipboard
+              </button>
+
+              <button type="button" id="btn-share" class="btn btn-secondary" hidden disabled>
+                Share
+              </button>
+            </div>
+
+            <div class="export-secondary">
+              <button type="button" id="btn-reset" class="btn btn-danger">
+                Reset
+              </button>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- /.preview-panel -->
+
+    </div><!-- /.app-layout -->
+  </main>
+
+  <!-- ===== KEYBOARD SHORTCUTS DIALOG ===== -->
+  <dialog id="shortcuts-dialog" class="shortcuts-dialog" aria-labelledby="shortcuts-dialog-title">
+    <div class="dialog-content">
+      <h2 id="shortcuts-dialog-title">Keyboard Shortcuts</h2>
+      <dl class="shortcuts-list">
+        <div class="shortcut-item">
+          <dt><kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>D</kbd></dt>
+          <dd>Download QR code</dd>
+        </div>
+        <div class="shortcut-item">
+          <dt><kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd></dt>
+          <dd>Copy to clipboard</dd>
+        </div>
+        <div class="shortcut-item">
+          <dt><kbd>?</kbd></dt>
+          <dd>Show this help dialog</dd>
+        </div>
+      </dl>
+      <button type="button" id="shortcuts-close-btn" class="btn btn-secondary" autofocus>Close</button>
+    </div>
+  </dialog>
+
+  <!-- ===== TOAST NOTIFICATION CONTAINER ===== -->
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ===== GLOBAL ERROR BANNER ===== -->
+  <div id="error-banner" class="error-banner" role="alert" hidden>
+    <p id="error-banner-message">Something went wrong.</p>
+    <button type="button" id="error-banner-reset" class="btn btn-secondary btn-sm">Reset Application</button>
+  </div>
+
+  <!-- App entry point -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
