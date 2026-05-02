@@ -92,15 +92,9 @@ export function showInputForm(dataType) {
     } else {
       group.setAttribute('hidden', '');
     }
-  }
 
-  // Move focus to the first input of the newly shown form
-  const activeGroup = document.getElementById(`input-${dataType}`);
-  if (activeGroup) {
-    const firstInput = activeGroup.querySelector('input, textarea, select');
-    if (firstInput) {
-      firstInput.focus();
-    }
+    // Clear validation errors for all types so stale highlights don't linger
+    clearValidationError(type);
   }
 }
 
