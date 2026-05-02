@@ -87,6 +87,13 @@ body {
   overflow-x: hidden;
 }
 
+a,
+a:visited,
+a:hover,
+a:active {
+  color: #d946ef;
+}
+
 /* ============================================================
    Accessibility
    ============================================================ */
@@ -1087,6 +1094,11 @@ output {
   background-color: var(--color-bg);
   color: var(--color-text);
   box-shadow: var(--shadow-md);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
 }
 
 .shortcuts-dialog::backdrop {
