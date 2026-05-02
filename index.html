@@ -42,48 +42,29 @@
 
         <!-- Data Type Selector -->
         <section class="section-data-type" aria-label="Data type selection">
-          <fieldset>
-            <legend class="section-heading">Data Type</legend>
-            <div id="data-type-selector" role="radiogroup" aria-label="Select QR code data type">
-              <label class="radio-card">
-                <input type="radio" name="dataType" value="url" checked>
-                <span class="radio-label">URL</span>
-              </label>
-              <label class="radio-card">
-                <input type="radio" name="dataType" value="text">
-                <span class="radio-label">Plain Text</span>
-              </label>
-              <label class="radio-card">
-                <input type="radio" name="dataType" value="phone">
-                <span class="radio-label">Phone</span>
-              </label>
-              <label class="radio-card">
-                <input type="radio" name="dataType" value="email">
-                <span class="radio-label">Email</span>
-              </label>
-              <label class="radio-card">
-                <input type="radio" name="dataType" value="sms">
-                <span class="radio-label">SMS</span>
-              </label>
-              <label class="radio-card">
-                <input type="radio" name="dataType" value="wifi">
-                <span class="radio-label">Wi-Fi</span>
-              </label>
-              <label class="radio-card">
-                <input type="radio" name="dataType" value="vcard">
-                <span class="radio-label">vCard</span>
-              </label>
-              <label class="radio-card">
-                <input type="radio" name="dataType" value="geo">
-                <span class="radio-label">Geo</span>
-              </label>
-            </div>
-          </fieldset>
+          <div class="section-heading-row">
+            <label for="data-type-dropdown" class="section-heading">What content are we encoding today?</label>
+            <button type="button" class="btn-help" data-help="datatype" aria-label="Help: Data types" title="Learn about data types">?</button>
+          </div>
+          <select id="data-type-dropdown">
+            <option value="url" selected>URL</option>
+            <option value="text">Plain Text</option>
+            <option value="phone">Phone</option>
+            <option value="email">Email</option>
+            <option value="sms">SMS</option>
+            <option value="wifi">Wi-Fi</option>
+            <option value="vcard">vCard (Contact Card)</option>
+            <option value="geo">Geo (Coordinates)</option>
+          </select>
+          <p id="data-type-description" class="data-type-description" aria-live="polite">Opens a link in the scanner's browser.</p>
         </section>
 
         <!-- Input Area -->
         <section class="section-input" aria-label="QR code content input">
-          <h2 class="section-heading">Content</h2>
+          <div class="section-heading-row">
+            <h2 class="section-heading">Content</h2>
+            <button type="button" class="btn-help" data-help="content" aria-label="Help: Content" title="Learn about content fields">?</button>
+          </div>
 
           <!-- URL Input -->
           <div id="input-url" class="input-group" data-type="url">
@@ -180,11 +161,15 @@
 
         <!-- Customization Panel -->
         <section class="section-customization" aria-label="QR code customization">
-          <h2 class="section-heading">Customize</h2>
+          <div class="section-heading-row">
+            <h2 class="section-heading">Customization</h2>
+          </div>
+
+          <hr class="customization-divider-first" aria-hidden="true">
 
           <!-- Colors -->
           <fieldset class="customization-group">
-            <legend>Colors</legend>
+            <legend><span class="legend-row">Colors <button type="button" class="btn-help btn-help-sm" data-help="colors" aria-label="Help: Colors" title="Learn about color options">?</button></span></legend>
 
             <div class="color-row">
               <label for="color-foreground">Foreground</label>
@@ -202,43 +187,31 @@
             </div>
           </fieldset>
 
-          <!-- Module Style -->
+          <!-- Module Style & Corner Eye Style -->
           <fieldset class="customization-group">
-            <legend>Module Style</legend>
-            <div class="radio-row">
-              <label class="radio-inline">
-                <input type="radio" name="moduleStyle" value="square" checked>
-                <span>Square</span>
-              </label>
-              <label class="radio-inline">
-                <input type="radio" name="moduleStyle" value="rounded">
-                <span>Rounded</span>
-              </label>
-            </div>
-          </fieldset>
-
-          <!-- Corner Eye Style -->
-          <fieldset class="customization-group">
-            <legend>Corner Eye Style</legend>
-            <div class="radio-row">
-              <label class="radio-inline">
-                <input type="radio" name="cornerEyeStyle" value="square" checked>
-                <span>Square</span>
-              </label>
-              <label class="radio-inline">
-                <input type="radio" name="cornerEyeStyle" value="rounded">
-                <span>Rounded</span>
-              </label>
-              <label class="radio-inline">
-                <input type="radio" name="cornerEyeStyle" value="dot">
-                <span>Dot</span>
-              </label>
+            <legend><span class="legend-row">Shape <button type="button" class="btn-help btn-help-sm" data-help="shape" aria-label="Help: Shape" title="Learn about shape options">?</button></span></legend>
+            <div class="shape-row">
+              <div class="shape-field">
+                <label for="module-style-select">Module Style</label>
+                <select id="module-style-select">
+                  <option value="square" selected>Square</option>
+                  <option value="rounded">Rounded</option>
+                </select>
+              </div>
+              <div class="shape-field">
+                <label for="corner-eye-style-select">Corner Eye Style</label>
+                <select id="corner-eye-style-select">
+                  <option value="square" selected>Square</option>
+                  <option value="rounded">Rounded</option>
+                  <option value="dot">Dot</option>
+                </select>
+              </div>
             </div>
           </fieldset>
 
           <!-- Logo Upload -->
           <fieldset class="customization-group">
-            <legend>Logo</legend>
+            <legend><span class="legend-row">Logo <button type="button" class="btn-help btn-help-sm" data-help="logo" aria-label="Help: Logo" title="Learn about logo options">?</button></span></legend>
             <div id="logo-drop-zone" class="drop-zone" role="region" aria-label="Logo upload area">
               <p class="drop-zone-text">Drag &amp; drop a logo here, or</p>
               <label for="logo-file-input" class="btn btn-secondary btn-sm">Choose File</label>
@@ -254,7 +227,7 @@
 
           <!-- Error Correction Level -->
           <fieldset class="customization-group">
-            <legend>Error Correction</legend>
+            <legend><span class="legend-row">Error Correction <button type="button" class="btn-help btn-help-sm" data-help="errorcorrection" aria-label="Help: Error Correction" title="Learn about error correction">?</button></span></legend>
             <div id="ec-level-selector" role="radiogroup" aria-label="Error correction level">
               <label class="radio-option">
                 <input type="radio" name="ecLevel" value="L">
@@ -282,7 +255,7 @@
 
           <!-- Output Size -->
           <fieldset class="customization-group">
-            <legend>Output Size</legend>
+            <legend><span class="legend-row">Output Size <button type="button" class="btn-help btn-help-sm" data-help="outputsize" aria-label="Help: Output Size" title="Learn about output size">?</button></span></legend>
             <label for="size-selector">Size (pixels)</label>
             <select id="size-selector">
               <option value="256">256 × 256</option>
@@ -294,7 +267,7 @@
 
           <!-- Quiet Zone -->
           <fieldset class="customization-group">
-            <legend>Quiet Zone</legend>
+            <legend><span class="legend-row">Quiet Zone <button type="button" class="btn-help btn-help-sm" data-help="quietzone" aria-label="Help: Quiet Zone" title="Learn about quiet zone">?</button></span></legend>
             <div class="quiet-zone-control">
               <label for="quiet-zone-range">Margin (modules)</label>
               <div class="range-with-value">
@@ -313,7 +286,10 @@
 
         <!-- Preview Area -->
         <section class="section-preview" aria-label="QR code preview" aria-live="polite">
-          <h2 class="section-heading">Preview</h2>
+          <div class="section-heading-row">
+            <h2 class="section-heading">Preview</h2>
+            <button type="button" class="btn-help" data-help="preview" aria-label="Help: Preview" title="Learn about the preview and scan indicator">?</button>
+          </div>
 
           <div class="preview-canvas-wrapper">
             <canvas id="qr-canvas" role="img" aria-label="QR code preview — enter content to generate" width="512" height="512"></canvas>
@@ -330,6 +306,10 @@
 
         <!-- Export Bar -->
         <section class="section-export" aria-label="Export actions">
+          <div class="section-heading-row">
+            <h2 class="section-heading">Export</h2>
+            <button type="button" class="btn-help" data-help="export" aria-label="Help: Export" title="Learn about export options">?</button>
+          </div>
           <div class="export-bar">
             <div class="export-primary">
               <div class="download-group">
@@ -349,11 +329,9 @@
               <button type="button" id="btn-share" class="btn btn-secondary" hidden disabled>
                 Share
               </button>
-            </div>
 
-            <div class="export-secondary">
               <button type="button" id="btn-reset" class="btn btn-danger">
-                Reset
+                Reset Everything
               </button>
             </div>
           </div>
@@ -394,6 +372,15 @@
     <p id="error-banner-message">Something went wrong.</p>
     <button type="button" id="error-banner-reset" class="btn btn-secondary btn-sm">Reset Application</button>
   </div>
+
+  <!-- ===== HELP DIALOG ===== -->
+  <dialog id="help-dialog" class="help-dialog" aria-labelledby="help-dialog-title">
+    <div class="dialog-content">
+      <h2 id="help-dialog-title"></h2>
+      <div id="help-dialog-body" class="help-dialog-body"></div>
+      <button type="button" id="help-close-btn" class="btn btn-secondary" autofocus>Close</button>
+    </div>
+  </dialog>
 
   <!-- App entry point -->
   <script type="module" src="js/app.js"></script>

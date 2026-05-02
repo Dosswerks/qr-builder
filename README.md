@@ -10,7 +10,7 @@ If you're hosting this on GitHub Pages, just navigate to your published URL.
 
 ## Choosing a Data Type
 
-The first thing you'll see is a row of buttons at the top of the controls panel. These let you pick what kind of content your QR code will encode. Each type has its own input fields and produces a QR code that devices know how to handle automatically when scanned.
+The first thing you'll see is a dropdown at the top of the controls panel asking "What content are we encoding today?" Pick the type of content your QR code will encode. A short description appears below the dropdown explaining what that type does when scanned. Each type has its own input fields and produces a QR code that devices know how to handle automatically.
 
 ### URL
 Enter a web address. Must start with `http://` or `https://`. When someone scans this QR code, their phone will open the link in a browser.

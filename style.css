@@ -7,7 +7,7 @@
   /* Colors */
   --color-primary: #2563eb;
   --color-primary-hover: #1d4ed8;
-  --color-error: #dc2626;
+  --color-error: #d946ef;
   --color-warning: #f59e0b;
   --color-success: #16a34a;
   --color-bg: #ffffff;
@@ -223,6 +223,131 @@ body {
 }
 
 /* ============================================================
+   Section Heading Row — heading + help button
+   ============================================================ */
+.section-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.section-heading-row .section-heading {
+  margin-bottom: 0;
+}
+
+/* Help Button */
+.btn-help {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  line-height: 1;
+  color: #d946ef;
+  background-color: rgba(217, 70, 239, 0.1);
+  border: 1px solid #d946ef;
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.btn-help:hover {
+  color: #ffffff;
+  background-color: #d946ef;
+  border-color: #d946ef;
+}
+
+/* Smaller help button for sub-section legends */
+.btn-help-sm {
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+}
+
+/* Legend row — legend text + help button side by side */
+.legend-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  width: 100%;
+}
+
+/* ============================================================
+   Help Dialog
+   ============================================================ */
+.help-dialog {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 0;
+  max-width: 560px;
+  width: calc(100% - var(--space-xl) * 2);
+  max-height: 80vh;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  box-shadow: var(--shadow-md);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+}
+
+.help-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.help-dialog .dialog-content {
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+}
+
+.help-dialog .dialog-content h2 {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  margin-bottom: var(--space-md);
+  flex-shrink: 0;
+}
+
+.help-dialog-body {
+  overflow-y: auto;
+  flex: 1;
+  font-size: var(--font-size-sm);
+  line-height: 1.7;
+  color: var(--color-text);
+  margin-bottom: var(--space-lg);
+}
+
+.help-dialog-body p {
+  margin-bottom: var(--space-md);
+}
+
+.help-dialog-body strong {
+  font-weight: 600;
+}
+
+.help-dialog-body ul {
+  margin: var(--space-sm) 0 var(--space-md) var(--space-lg);
+  padding: 0;
+}
+
+.help-dialog-body li {
+  margin-bottom: var(--space-xs);
+}
+
+.help-dialog .btn {
+  flex-shrink: 0;
+  align-self: flex-end;
+}
+
+/* ============================================================
    Sections & Headings
    ============================================================ */
 .section-heading {
@@ -232,7 +357,6 @@ body {
   margin-bottom: var(--space-md);
 }
 
-.section-data-type,
 .section-input,
 .section-customization,
 .section-preview,
@@ -242,6 +366,21 @@ body {
   border-radius: var(--radius-lg);
   padding: var(--space-lg);
   box-shadow: var(--shadow-sm);
+}
+
+.section-data-type {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-sm);
+  background-color: rgba(37, 99, 235, 0.06);
+  border-color: #22d3ee;
+}
+
+@media (prefers-color-scheme: dark) {
+  .section-data-type {
+    background-color: rgba(37, 99, 235, 0.12);
+  }
 }
 
 /* ============================================================
@@ -258,6 +397,7 @@ legend {
   font-weight: 600;
   color: var(--color-text);
   margin-bottom: var(--space-sm);
+  width: 100%;
 }
 
 label {
@@ -295,8 +435,8 @@ input[type="email"]:focus,
 input[type="number"]:focus,
 textarea:focus,
 select:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  border-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
   outline: none;
 }
 
@@ -321,6 +461,10 @@ select {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
+}
+
+.input-group[hidden] {
+  display: none;
 }
 
 .input-group-description {
@@ -391,54 +535,17 @@ input[type="checkbox"] {
 }
 
 /* ============================================================
-   Radio Cards — Data Type Selector
+   Data Type Dropdown & Description
    ============================================================ */
-#data-type-selector {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: var(--space-sm);
-}
-
-.radio-card {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-sm) var(--space-md);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  text-align: center;
+.data-type-description {
   font-size: var(--font-size-sm);
-  font-weight: 500;
-  color: var(--color-text);
-  background-color: var(--color-bg);
-  margin-bottom: 0;
-}
-
-.radio-card input[type="radio"] {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.radio-card:has(input:checked) {
-  border-color: var(--color-primary);
-  background-color: rgba(37, 99, 235, 0.06);
-  color: var(--color-primary);
-}
-
-.radio-card:has(input:focus-visible) {
-  outline: 3px solid var(--color-primary);
-  outline-offset: 2px;
-}
-
-.radio-label {
-  pointer-events: none;
+  color: var(--color-text-secondary);
+  margin-top: var(--space-sm);
+  line-height: var(--line-height);
 }
 
 /* ============================================================
-   Radio Inline — Module Style, Corner Eye Style
+   Radio Inline — (reserved for future use)
    ============================================================ */
 .radio-row {
   display: flex;
@@ -446,34 +553,17 @@ input[type="checkbox"] {
   gap: var(--space-sm);
 }
 
-.radio-inline {
+/* ============================================================
+   Shape Row — Module Style & Corner Eye Style side-by-side
+   ============================================================ */
+.shape-row {
   display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-  padding: var(--space-xs) var(--space-md);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  font-size: var(--font-size-sm);
-  font-weight: 400;
-  color: var(--color-text);
-  margin-bottom: 0;
+  gap: var(--space-md);
 }
 
-.radio-inline input[type="radio"] {
-  accent-color: var(--color-primary);
-  margin: 0;
-  cursor: pointer;
-}
-
-.radio-inline:has(input:checked) {
-  border-color: var(--color-primary);
-  background-color: rgba(37, 99, 235, 0.06);
-}
-
-.radio-inline:has(input:focus-visible) {
-  outline: 3px solid var(--color-primary);
-  outline-offset: 2px;
+.shape-field {
+  flex: 1;
+  min-width: 0;
 }
 
 /* ============================================================
@@ -547,7 +637,13 @@ input[type="checkbox"] {
 }
 
 .customization-group:first-child {
-  padding-top: 0;
+  padding-top: var(--space-md);
+}
+
+.customization-divider-first {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 0 0 0 0;
 }
 
 /* ============================================================
@@ -689,8 +785,8 @@ output {
 }
 
 .btn-danger:not(:disabled):hover {
-  background-color: #b91c1c;
-  border-color: #b91c1c;
+  background-color: #c026d3;
+  border-color: #c026d3;
 }
 
 .btn-icon:not(:disabled):hover {
@@ -736,7 +832,7 @@ output {
 .input-group:has(.field-error:not(:empty)) input:focus,
 .input-group:has(.field-error:not(:empty)) textarea:focus,
 .input-group:has(.field-error:not(:empty)) select:focus {
-  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+  box-shadow: 0 0 0 3px rgba(217, 70, 239, 0.15);
 }
 
 /* ============================================================
@@ -775,12 +871,17 @@ output {
 .logo-preview {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: var(--space-md);
   padding: var(--space-md);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background-color: var(--color-bg-secondary);
   margin-top: var(--space-sm);
+}
+
+.logo-preview[hidden] {
+  display: none;
 }
 
 .logo-preview img {
@@ -883,7 +984,7 @@ output {
 
 .export-primary {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: var(--space-sm);
   align-items: center;
 }
@@ -911,7 +1012,7 @@ output {
 
 .export-secondary {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
 /* ============================================================
@@ -1080,6 +1181,13 @@ kbd {
    Responsive Adjustments
    ============================================================ */
 
+/* Mid-width screens — stack export buttons */
+@media (max-width: 900px) {
+  .export-primary {
+    flex-wrap: wrap;
+  }
+}
+
 /* Small screens */
 @media (max-width: 480px) {
   .app-main {
@@ -1092,10 +1200,6 @@ kbd {
   .section-preview,
   .section-export {
     padding: var(--space-md);
-  }
-
-  #data-type-selector {
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
   }
 
   #ec-level-selector {
