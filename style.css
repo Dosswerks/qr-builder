@@ -1190,6 +1190,67 @@ kbd {
 }
 
 /* ============================================================
+   Tip Jar Footer
+   ============================================================ */
+.tip-jar-footer {
+  max-width: 1400px;
+  margin: var(--space-xl) auto 0;
+  padding: 0 var(--space-lg) var(--space-xl);
+  text-align: center;
+}
+
+.tip-jar-content {
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.tip-jar-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--space-md);
+}
+
+.tip-jar-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
+}
+
+.tip-jar-btn {
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tip-jar-btn {
+    transition: transform var(--transition-fast);
+  }
+  .tip-jar-btn:hover {
+    transform: scale(1.08);
+  }
+}
+
+.tip-jar-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.tip-jar-qr-label {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+}
+
+/* ============================================================
    Responsive Adjustments
    ============================================================ */
 
